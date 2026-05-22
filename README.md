@@ -1,6 +1,14 @@
 # EasyPharma Dashboard
 
-Dashboard Full-Stack corporativo para **vendas e estoque farmacêutico**, desenvolvido com foco em **segurança**, **performance** e **experiência de uso em ambientes reais de varejo farmacêutico**.
+![React](https://img.shields.io/badge/React-18-blue)
+![Node](https://img.shields.io/badge/Node.js-18-green)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![SQL Server](https://img.shields.io/badge/SQL%20Server-Database-red)
+![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
+
+---
+
+Dashboard Full-Stack para gestão de vendas e estoque no varejo farmacêutico, com foco em segurança, performance e uso em cenários reais de sistema corporativo.
 
 O projeto foi construído como parte do meu processo de transição de carreira da área de **suporte técnico** para **desenvolvimento de software**, utilizando uma arquitetura moderna e boas práticas aplicadas a sistemas empresariais.
 
@@ -21,7 +29,7 @@ A proposta do sistema é reproduzir um cenário real de software corporativo uti
 
 ---
 
-## A Stack
+## Stack utilizada
 
 ### Front-end
 - **React**
@@ -98,6 +106,15 @@ As consultas de vendas e indicadores operam com filtros por data e paginação, 
 
 ---
 
+## Diferenciais técnicos
+
+- Paginação server-side integrada com SQL Server
+- Autenticação segura com JWT em cookie HttpOnly
+- Separação clara entre front-end e back-end
+- Uso consistente de TypeScript em toda a aplicação
+- Estrutura preparada para evolução com filtros, busca e análise de dados
+
+
 ## Contexto de Negócio
 
 O sistema foi pensado para o contexto de **varejo farmacêutico**, onde é fundamental acompanhar:
@@ -140,7 +157,7 @@ pharma-dashboard/
 └── README.md
 ```
 
-## Como rodar o projeto
+## Como executar localmente
 
 1. **Clone o repositório**
 2. **Configuração do Server:**
@@ -150,3 +167,15 @@ pharma-dashboard/
 3. **Configuração do Client:**
    - Acesse a pasta `/client`, instale as dependências (`npm install`).
    - Inicie o front-end: `npm run dev`.
+
+   ---
+
+## Autor
+
+Jean Silva
+
+Atualmente em transição de carreira da área de suporte técnico para desenvolvimento.
+
+Este projeto foi desenvolvido como forma de aplicar na prática conceitos de back-end, segurança, integração com banco SQL Server e construção de interfaces voltadas para uso real.
+
+A proposta foi construir algo próximo de um sistema corporativo, indo além de exemplos simples de portfólio.

@@ -133,6 +133,26 @@ app.get('/api/sales/summary', authenticateToken, async (req, res) => {
   }
 });
 
+app.get('/api/sales/trend', authenticateToken, async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    if (!startDate || !endDate) {
+      return res.json([]);
+    }
+
+    const trend = await SalesRepository.getTendenciaVendasPorPeriodo(
+      startDate as string,
+      endDate as string
+    );
+
+    res.json(trend);
+  } catch (error) {
+    console.error('Erro ao buscar tendência de vendas por período:', error);
+    res.status(500).json({ error: 'Erro ao buscar tendência de vendas' });
+  }
+});
+
 getConnection().then(() => {
   app.listen(PORT, () => {
     console.log(`[SERVER]: Rodando em http://localhost:${PORT}`);

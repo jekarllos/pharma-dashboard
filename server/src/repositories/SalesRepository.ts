@@ -3,11 +3,12 @@ import { getConnection, sql } from "../database";
 export class SalesRepository {
   static async getResumoVendasDeHoje() {
     const pool = await getConnection();
+
     const result = await pool.request()
-      .input('today', sql.Date, new Date())
+      .input("today", sql.Date, new Date())
       .query(`
         SELECT
-          COUNT(Cod_Movime) as totalVendas,
+          COUNT(Cod_Movime) AS totalVendas,
           ISNULL(SUM(Val_Movime), 0) AS faturamentoDiario
         FROM MOVCB
         WHERE CAST(Dat_Emissa AS DATE) = '2025-05-01'
@@ -18,12 +19,13 @@ export class SalesRepository {
 
   static async getTendenciaVendasSemanais() {
     const pool = await getConnection();
+
     const result = await pool.request()
       .query(`
-        SELECT 
-          FORMAT(Dat_Emissa, 'dd/MM') as data, 
-          SUM(Val_Movime) as total 
-        FROM MOVCB 
+        SELECT
+          FORMAT(Dat_Emissa, 'dd/MM') AS data,
+          SUM(Val_Movime) AS total
+        FROM MOVCB
         WHERE CAST(Dat_Emissa AS DATE) BETWEEN '2025-04-24' AND '2025-05-01'
         GROUP BY FORMAT(Dat_Emissa, 'dd/MM'), CAST(Dat_Emissa AS DATE)
         ORDER BY CAST(Dat_Emissa AS DATE) ASC
@@ -34,14 +36,15 @@ export class SalesRepository {
 
   static async getInventarioCritico() {
     const pool = await getConnection();
+
     const result = await pool.request().query(`
-      SELECT TOP 5 
-        P.Cod_Produt as id,
-        P.Des_Produt as name, 
-        ISNULL(E.Qtd_Fisico, 0) as stock
-      FROM PRXLJ E 
-      JOIN PRODU P ON E.Cod_Produt = P.Cod_Produt 
-      WHERE E.Qtd_Fisico <= 10 
+      SELECT TOP 5
+        P.Cod_Produt AS id,
+        P.Des_Produt AS name,
+        ISNULL(E.Qtd_Fisico, 0) AS stock
+      FROM PRXLJ E
+      JOIN PRODU P ON E.Cod_Produt = P.Cod_Produt
+      WHERE E.Qtd_Fisico <= 10
       ORDER BY E.Qtd_Fisico ASC
     `);
 
@@ -58,17 +61,17 @@ export class SalesRepository {
     const offset = (page - 1) * limit;
 
     const result = await pool.request()
-      .input('startDate', sql.VarChar(10), startDate)
-      .input('endDate', sql.VarChar(10), endDate)
-      .input('offset', sql.Int, offset)
-      .input('limit', sql.Int, limit)
+      .input("startDate", sql.VarChar(10), startDate)
+      .input("endDate", sql.VarChar(10), endDate)
+      .input("offset", sql.Int, offset)
+      .input("limit", sql.Int, limit)
       .query(`
         SELECT
           M.Cod_Movime,
           M.Num_Docume,
           M.Dat_Emissa,
           M.Val_Movime,
-          COUNT(*) OVER() as TotalCount
+          COUNT(*) OVER() AS TotalCount
         FROM MOVCB M
         WHERE M.Cod_Loja = 3
           AND M.Cod_ModDoc = 65
@@ -88,8 +91,8 @@ export class SalesRepository {
     const pool = await getConnection();
 
     const result = await pool.request()
-      .input('startDate', sql.VarChar(10), startDate)
-      .input('endDate', sql.VarChar(10), endDate)
+      .input("startDate", sql.VarChar(10), startDate)
+      .input("endDate", sql.VarChar(10), endDate)
       .query(`
         SELECT
           COUNT(*) AS quantidadeVendas,
@@ -103,5 +106,28 @@ export class SalesRepository {
       `);
 
     return result.recordset[0];
+  }
+
+  static async getTendenciaVendasPorPeriodo(startDate: string, endDate: string) {
+    const pool = await getConnection();
+
+    const result = await pool.request()
+      .input("startDate", sql.VarChar(10), startDate)
+      .input("endDate", sql.VarChar(10), endDate)
+      .query(`
+        SELECT
+          CONVERT(VARCHAR(10), CAST(M.Dat_Emissa AS DATE), 103) AS data,
+          COUNT(*) AS quantidadeVendas,
+          ISNULL(SUM(M.Val_Movime), 0) AS total
+        FROM MOVCB M
+        WHERE M.Cod_Loja = 3
+          AND M.Cod_ModDoc = 65
+          AND M.Dat_Emissa >= CONVERT(date, @startDate, 23)
+          AND M.Dat_Emissa < DATEADD(DAY, 1, CONVERT(date, @endDate, 23))
+        GROUP BY CAST(M.Dat_Emissa AS DATE)
+        ORDER BY CAST(M.Dat_Emissa AS DATE) ASC
+      `);
+
+    return result.recordset;
   }
 }

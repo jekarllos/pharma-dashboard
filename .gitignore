@@ -4,6 +4,7 @@ node_modules/
 # Build
 dist/
 build/
+Bkp/
 
 # Variáveis de Ambiente (Segurança Crítica)
 .env
@@ -24,3 +25,4 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+

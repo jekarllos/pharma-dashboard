@@ -86,3 +86,16 @@ export function useSalesPeriodSummary(startDate: string, endDate: string) {
     enabled: !!startDate && !!endDate
   });
 }
+
+export function useSalesPeriodTrend(startDate: string, endDate: string) {
+  return useQuery({
+    queryKey: ['sales-period-trend', startDate, endDate],
+    queryFn: async () => {
+      const { data } = await api.get(
+        `/api/sales/trend?startDate=${startDate}&endDate=${endDate}`
+      );
+      return data;
+    },
+    enabled: !!startDate && !!endDate
+  });
+}

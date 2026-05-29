@@ -31,14 +31,15 @@ export function FiltroDeDatas({ dataInicial, dataFinal, aoAlterar }: Props) {
 
   function formatarData(data: string) {
     if (!data) return "";
-    return new Date(data).toLocaleDateString("pt-BR");
+    const [ano, mes, dia] = data.split("-");
+    return `${dia}/${mes}/${ano}`;
   }
 
-  function getDataLocal() {
-    const d = new Date();
-    const offset = d.getTimezoneOffset();
-    d.setMinutes(d.getMinutes() - offset);
-    return d.toISOString().slice(0, 10);
+  function formatarDataParaInput(date: Date) {
+    const dia = String(date.getDate()).padStart(2, "0");
+    const mes = String(date.getMonth() + 1).padStart(2, "0");
+    const ano = date.getFullYear();
+    return `${ano}-${mes}-${dia}`;
   }
 
   return (
@@ -54,7 +55,6 @@ export function FiltroDeDatas({ dataInicial, dataFinal, aoAlterar }: Props) {
         </Button>
       </PopoverTrigger>
 
-      {/* Adicionado bg-white, shadow-lg, z-50 e largura arbitrária w-[480px] */}
       <PopoverContent
         align="start"
         sideOffset={8}
@@ -69,7 +69,7 @@ export function FiltroDeDatas({ dataInicial, dataFinal, aoAlterar }: Props) {
                 : "text-slate-700 hover:bg-slate-200"
             }`}
             onClick={() => {
-              const today = getDataLocal();
+              const today = formatarDataParaInput(new Date());
               setLocalStart(today);
               setLocalEnd(today);
               setPresetAtivo("hoje");
@@ -87,7 +87,7 @@ export function FiltroDeDatas({ dataInicial, dataFinal, aoAlterar }: Props) {
             onClick={() => {
               const d = new Date();
               d.setDate(d.getDate() - 1);
-              const y = d.toISOString().slice(0, 10);
+              const y = formatarDataParaInput(d);
               setLocalStart(y);
               setLocalEnd(y);
               setPresetAtivo("ontem");
@@ -103,12 +103,15 @@ export function FiltroDeDatas({ dataInicial, dataFinal, aoAlterar }: Props) {
                 : "text-slate-700 hover:bg-slate-200"
             }`}
             onClick={() => {
-              const d = new Date();
-              const end = d.toISOString().slice(0, 10);
-              d.setDate(d.getDate() - 6);
-              const start = d.toISOString().slice(0, 10);
-              setLocalStart(start);
-              setLocalEnd(end);
+              const hoje = new Date();
+              const dataFinal = formatarDataParaInput(hoje);
+
+              const dataInicialDate = new Date();
+              dataInicialDate.setDate(dataInicialDate.getDate() - 6);
+              const dataInicial = formatarDataParaInput(dataInicialDate);
+
+              setLocalStart(dataInicial);
+              setLocalEnd(dataFinal);
               setPresetAtivo("7dias");
             }}
           >
@@ -122,12 +125,15 @@ export function FiltroDeDatas({ dataInicial, dataFinal, aoAlterar }: Props) {
                 : "text-slate-700 hover:bg-slate-200"
             }`}
             onClick={() => {
-              const d = new Date();
-              const end = d.toISOString().slice(0, 10);
-              d.setDate(d.getDate() - 29);
-              const start = d.toISOString().slice(0, 10);
-              setLocalStart(start);
-              setLocalEnd(end);
+              const hoje = new Date();
+              const dataFinal = formatarDataParaInput(hoje);
+
+              const dataInicialDate = new Date();
+              dataInicialDate.setDate(dataInicialDate.getDate() - 29);
+              const dataInicial = formatarDataParaInput(dataInicialDate);
+
+              setLocalStart(dataInicial);
+              setLocalEnd(dataFinal);
               setPresetAtivo("30dias");
             }}
           >

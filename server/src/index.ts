@@ -133,6 +133,47 @@ app.get('/api/sales/summary', authenticateToken, async (req, res) => {
   }
 });
 
+app.get('/api/sales/all', authenticateToken, async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    if (!startDate || !endDate) {
+      return res.json([]);
+    }
+
+    const allSales = await SalesRepository.getAllVendasPorPeriodo(
+      startDate as string,
+      endDate as string
+    );
+
+    res.json(allSales);
+  } catch (error) {
+    console.error('Erro ao buscar todas as vendas:', error);
+    res.status(500).json({ error: 'Erro ao buscar todas as vendas' });
+  }
+});
+
+app.get('/api/sales/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ error: 'ID da venda é obrigatório' });
+    }
+
+    const venda = await SalesRepository.getVendaPorId(Number(id));
+
+    if (!venda) {
+      return res.status(404).json({ error: 'Venda não encontrada' });
+    }
+
+    res.json(venda);
+  } catch (error) {
+    console.error('Erro ao buscar detalhes da venda:', error);
+    res.status(500).json({ error: 'Erro ao buscar detalhes da venda' });
+  }
+});
+
 app.get('/api/sales/trend', authenticateToken, async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
